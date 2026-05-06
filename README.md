@@ -179,3 +179,49 @@ The responses alternated between:
 - `Backend Server 2 🚀`
 
 This confirms that the DNS record points correctly to the Nginx load balancer.
+
+---
+
+## DEVOPS-12: Round Robin Test
+
+The default Nginx load balancing algorithm, `round_robin`, was tested through the public DNS record:
+
+```bash
+curl http://load.devopsroad.xyz
+```
+
+Multiple requests were sent to the load balancer.
+
+The responses alternated between:
+
+- `Backend Server 1 🚀`
+- `Backend Server 2 🚀`
+
+This confirms that Nginx distributes requests between both backend servers using the default round robin algorithm.
+
+---
+
+## DEVOPS-12: Least Connections Test
+
+The Nginx load balancing algorithm was changed from the default `round_robin` to `least_conn`.
+
+The upstream configuration was updated with:
+
+```nginx
+least_conn;
+```
+
+Nginx configuration was tested and reloaded successfully:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+The load balancer was tested again through the DNS record:
+
+```bash
+curl http://load.devopsroad.xyz
+```
+
+Traffic was still distributed successfully between both backend servers.
