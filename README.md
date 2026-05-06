@@ -144,3 +144,38 @@ The responses alternated between:
 - `Backend Server 2 🚀`
 
 This confirms that Nginx round robin load balancing is working correctly.
+
+---
+
+## DEVOPS-11: DNS Configuration
+
+A DNS record was configured in AWS Route 53 for the Nginx load balancer.
+
+Record:
+
+```text
+load.devopsroad.xyz -> LB_PUBLIC_IP
+```
+
+The domain `devopsroad.xyz` was delegated from Namecheap to AWS Route 53 using the Route 53 nameservers.
+
+DNS was verified using public DNS resolvers:
+
+```bash
+dig @8.8.8.8 load.devopsroad.xyz A +short
+dig @1.1.1.1 load.devopsroad.xyz A +short
+dig @9.9.9.9 load.devopsroad.xyz A +short
+```
+
+The load balancer was tested successfully through the domain:
+
+```bash
+curl http://load.devopsroad.xyz
+```
+
+The responses alternated between:
+
+- `Backend Server 1 🚀`
+- `Backend Server 2 🚀`
+
+This confirms that the DNS record points correctly to the Nginx load balancer.
