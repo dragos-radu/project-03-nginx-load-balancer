@@ -54,3 +54,44 @@ The load balancer will receive HTTP traffic and forward requests to the backend 
 - Jira
 
 ---
+
+---
+
+## DEVOPS-9: Backend Web Servers
+
+Two EC2 instances were created as backend web servers:
+
+- `web1`
+- `web2`
+
+Both servers use:
+
+- Ubuntu
+- Nginx
+- Git
+
+The project repository was cloned on each backend server:
+
+```bash
+git clone https://github.com/USERNAME/project-03-nginx-load-balancer.git
+```
+
+The backend HTML files were deployed from the repository to Nginx:
+
+```bash
+sudo cp backend1/index.html /var/www/html/index.html
+sudo cp backend2/index.html /var/www/html/index.html
+sudo systemctl restart nginx
+```
+
+Backend pages:
+
+- `web1` displays: `Backend Server 1 🚀`
+- `web2` displays: `Backend Server 2 🚀`
+
+The backend servers were tested successfully through their public IP addresses.
+
+```bash
+curl http://WEB1_PUBLIC_IP
+curl http://WEB2_PUBLIC_IP
+```
