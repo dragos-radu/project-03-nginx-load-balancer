@@ -95,3 +95,52 @@ The backend servers were tested successfully through their public IP addresses.
 curl http://WEB1_PUBLIC_IP
 curl http://WEB2_PUBLIC_IP
 ```
+
+---
+
+## DEVOPS-10: Nginx Load Balancer Upstream
+
+The `lb1` EC2 instance was configured as an Nginx Layer 7 load balancer.
+
+The load balancer uses an Nginx `upstream` block to forward HTTP requests to the two backend servers using their private IP addresses.
+
+```nginx
+upstream backend_servers {
+    server WEB1_PRIVATE_IP;
+    server WEB2_PRIVATE_IP;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://backend_servers;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+}
+```
+
+The default Nginx configuration was disabled and the load balancer configuration was enabled:
+
+```bash
+sudo cp nginx/load-balancer.conf /etc/nginx/sites-available/load-balancer
+sudo ln -s /etc/nginx/sites-available/load-balancer /etc/nginx/sites-enabled/load-balancer
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+The load balancer was tested successfully through its public IP address:
+
+```bash
+curl http://LB_PUBLIC_IP
+```
+
+The responses alternated between:
+
+- `Backend Server 1 🚀`
+- `Backend Server 2 🚀`
+
+This confirms that Nginx round robin load balancing is working correctly.
